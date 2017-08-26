@@ -1,0 +1,2 @@
+cl /EHsc /O2 /openmp main.cpp AutoDiff.cpp
+g++ -O3 -openmp -std=c++14 main.cpp AutoDiff.cpp -o mcSim
