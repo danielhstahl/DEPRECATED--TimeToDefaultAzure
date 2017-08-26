@@ -20,7 +20,11 @@ public:
     //n=n_;
     norm=std::normal_distribution<double>(0.0, 1.0);
   }  
+<<<<<<< HEAD
   double getNorm(){
+=======
+  double getUnif(){
+>>>>>>> de01e4110c8f7db6d2a14471596b93464cf1f880
     return norm(generator); 
   }
 

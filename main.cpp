@@ -1,11 +1,17 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
+<<<<<<< HEAD
 #include <cfloat>
 #include "Newton.h"
 #include "RUnif.h"
 #include "RNorm.h"
 #include "RGamma.h"
+=======
+#include "Newton.h"
+#include "RUnif.h"
+#include "RNorm.h"
+>>>>>>> de01e4110c8f7db6d2a14471596b93464cf1f880
 #include "MC.h"
 #include "Histogram.h"
 
@@ -14,17 +20,24 @@ auto pTau=[](double a, double b, double sigma, auto& tau, double lambda){
     auto C=(b-.5*sigma*sigma/(a*a))*(A-tau)-.25*sigma*sigma/a*A*A;
     return exp(-A*lambda+C);
 };
+<<<<<<< HEAD
 
 auto mgfGamma=[](double a, double b, double u){
     return pow(1+b*u, -a);  
 };
 
+=======
+auto pCorrelated=[](double intLambda, auto& tau){ //intLambda=\int_0 ^t \lambda(t) dt where \lambda(t) is the solution of an SDE
+    return exp(-intLambda*tau);
+};
+>>>>>>> de01e4110c8f7db6d2a14471596b93464cf1f880
 auto lgd=[](double t, double exposure){
     return (1-exp(-t))*exposure;
 };
 auto revenue=[](double t, double balance, double rate){
     return balance*(exp(rate*t)-1.0);
 };
+<<<<<<< HEAD
 
 class Generate_Archimedes{
 private:
@@ -101,17 +114,61 @@ int main(){
         return pnl;
     };
     sim.simulateDistribution(getT);//runs in parallel
+=======
+/*auto simVas=[](double a, double b, double sigma, double lambda){
+    double expect=-((lambda-b)/a)*(1-exp(-a*)) 
+};*/
+
+int main(){
+    double a=.1;
+    double b=.06;
+    double lambda=.05; //starting point for latent variable
+    double sigma=.03;
+    int n=10000;//number of MC simulations of a portfolio
+    int m=10000;//size of portfolio
+    int k=100;//number of steps for simulating 
+    double timeHorizon=1;//years
+    double rate=.2;//itnerest rate
+    MC<double> sim(n);
+    RUnif rnd;
+    Newton nt;
+    //int numDefaults=0;
+    auto getT=[&](){
+        double pnl=0;
+        for(int i=0;i<m;++i){
+            double guess=2;
+            double simResult=rnd.getUnif();
+            nt.zeros([&](auto& t){return pTau(a, b, sigma, t, lambda)-simResult;}, guess); //solves for the "t" that satisifies F(t)=U where U is the uniform random variable and F is the CDF.  Guess is modified and is the "t" after the solution converges
+            double bal=rnd.getUnif()*10000;
+            if(guess<timeHorizon){
+                pnl+=revenue(guess, bal, rate)-lgd(guess, bal);
+                //numDefaults++;
+            }
+            else{
+                pnl+=revenue(timeHorizon, bal, rate);
+            }
+        }
+        return pnl;
+    };
+    sim.simulateDistribution(getT);//runs in parallel
+    //std::cout<<"Number of defaults: "<<numDefaults<<std::endl;
+>>>>>>> de01e4110c8f7db6d2a14471596b93464cf1f880
     std::vector<double> distribution=sim.getDistribution();
     double min=DBL_MAX; //purposely out of order because actual min and max are found within the function
     double max=DBL_MIN;
     binAndSend(
+<<<<<<< HEAD
         [](const auto& res){
+=======
+        [](auto& res){
+>>>>>>> de01e4110c8f7db6d2a14471596b93464cf1f880
             std::cout<<res<<std::endl;
         },
         min,
         max,
         distribution
     );
+<<<<<<< HEAD
 }
 
 
@@ -144,3 +201,6 @@ double simulateLambda(double a, double b, double sigma, double lambda0, double U
     }
     return i*dt;
 };*/
+=======
+}
+>>>>>>> de01e4110c8f7db6d2a14471596b93464cf1f880
